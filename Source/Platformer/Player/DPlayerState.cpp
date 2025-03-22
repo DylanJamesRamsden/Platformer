@@ -5,7 +5,7 @@
 
 #include <AbilitySystemComponent.h>
 
-#include "DAbilitySet.h"
+#include "Platformer/AbilitySystem/DAbilitySet.h"
 
 DEFINE_LOG_CATEGORY(LogDPlayerState);
 
