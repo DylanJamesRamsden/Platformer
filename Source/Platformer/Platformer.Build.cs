@@ -14,7 +14,7 @@ public class Platformer : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags"});
 		
-		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayAbilities" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTasks" });
 		
 	}
 }
