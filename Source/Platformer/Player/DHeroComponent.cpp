@@ -7,9 +7,9 @@
 #include <EnhancedInputSubsystems.h>
 #include <AbilitySystemGlobals.h>
 
-#include "DAbilitySystemComponent.h"
-#include "DEnhancedInputComponent.h"
-#include "DInputData.h"
+#include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
+#include "Platformer/Input/DEnhancedInputComponent.h"
+#include "Platformer/Input/DInputData.h"
 
 DEFINE_LOG_CATEGORY(LogDHeroComponent);
 
