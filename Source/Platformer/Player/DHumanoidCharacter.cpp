@@ -3,12 +3,15 @@
 
 #include "DHumanoidCharacter.h"
 
+#include "DHeroComponent.h"
+
 // Sets default values
 ADHumanoidCharacter::ADHumanoidCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	HeroComp = CreateDefaultSubobject<UDHeroComponent>("HeroComponent");
 }
 
 // Called when the game starts or when spawned
@@ -16,19 +19,5 @@ void ADHumanoidCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void ADHumanoidCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void ADHumanoidCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
