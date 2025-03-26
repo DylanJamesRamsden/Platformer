@@ -6,9 +6,14 @@
 
 #include <EnhancedInputComponent.h>
 
+#include <NativeGameplayTags.h>
+
 #include "DInputConfig.h"
 
 #include "DEnhancedInputComponent.generated.h"
+
+// @TODO Move to specific GameplayTag C++ class
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Native_Move);
 
 /**
  * 

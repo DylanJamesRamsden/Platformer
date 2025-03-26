@@ -8,7 +8,9 @@
 
 #include "DHumanoidCharacter.generated.h"
 
-class UDHeroComponent;
+class UDInputData;
+
+DECLARE_LOG_CATEGORY_EXTERN(LogDHumanoidCharacter, Log, All);
 
 UCLASS()
 class PLATFORMER_API ADHumanoidCharacter : public ACharacter
@@ -17,15 +19,25 @@ class PLATFORMER_API ADHumanoidCharacter : public ACharacter
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UDHeroComponent* HeroComp;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	const UDInputData* InputData = nullptr;
 
 public:
 	// Sets default values for this character's properties
 	ADHumanoidCharacter();
 
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+
+	UFUNCTION()
+	void AbilityInputTrigger(const FGameplayTag InputTag, const bool bValue);
+
+	UFUNCTION()
+	void Move(const FInputActionValue& inputActionValue);
 
 };
