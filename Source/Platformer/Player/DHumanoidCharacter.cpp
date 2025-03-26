@@ -10,6 +10,7 @@
 #include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
 #include "Platformer/Input/DEnhancedInputComponent.h"
 #include "Platformer/Input/DInputData.h"
+#include "Platformer/Utility/DGameplayTags.h"
 
 DEFINE_LOG_CATEGORY(LogDHumanoidCharacter);
 

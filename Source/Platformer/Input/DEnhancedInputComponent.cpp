@@ -3,9 +3,6 @@
 
 #include "DEnhancedInputComponent.h"
 
-// @TODO Move to specific GameplayTag C++ class
-UE_DEFINE_GAMEPLAY_TAG(Input_Native_Move, "Input.Native.Move");
-
 bool UDEnhancedInputComponent::UnbindAction(const UInputAction* inputAction)
 {
 	for (const TUniquePtr<FEnhancedInputActionEventBinding>& actionBinding : GetActionEventBindings())
