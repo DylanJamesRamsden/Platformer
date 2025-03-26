@@ -9,6 +9,7 @@
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 
+#include "DPlayerState.h"
 #include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
 #include "Platformer/Input/DEnhancedInputComponent.h"
 #include "Platformer/Input/DInputData.h"
@@ -82,9 +83,13 @@ void ADHumanoidCharacter::BeginPlay()
 
 void ADHumanoidCharacter::AbilityInputTrigger(const FGameplayTag InputTag, const bool bValue)
 {
-	if (const auto abilitySystemComponent = Cast<UDAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(this)))
+	// @TODO To be honest, we should just attach the ASC to the pawn rather than the PlayerState
+	if (ADPlayerState* playerState = GetPlayerState<ADPlayerState>())
 	{
-		abilitySystemComponent->AbilityInputTagTrigger(InputTag, bValue);
+		if (const auto abilitySystemComponent = Cast<UDAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(playerState)))
+		{
+			abilitySystemComponent->AbilityInputTagTrigger(InputTag, bValue);
+		}
 	}
 }
 
