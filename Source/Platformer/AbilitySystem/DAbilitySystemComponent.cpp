@@ -11,38 +11,41 @@ void UDAbilitySystemComponent::AbilityInputTagTrigger(const FGameplayTag& inputT
 	{
 		for (FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(inputTag)))
+			if (AbilitySpec.Ability)
 			{
-				const bool bWasPressed = AbilitySpec.InputPressed;
-				AbilitySpec.InputPressed = bValue;
+				if (AbilitySpec.DynamicAbilityTags.HasTagExact(inputTag))
+				{
+					const bool bWasPressed = AbilitySpec.InputPressed;
+					AbilitySpec.InputPressed = bValue;
 
-				const bool bTryActivation = !AbilitySpec.IsActive() && (bValue);
-				if (bTryActivation)
-				{
-					TryActivateAbility(AbilitySpec.Handle);
-				}
-				else if (bWasPressed != AbilitySpec.InputPressed)
-				{
-					const bool bSendServerEvents = (AbilitySpec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false);
-					if (AbilitySpec.InputPressed)
+					const bool bTryActivation = !AbilitySpec.IsActive() && (bValue);
+					if (bTryActivation)
 					{
-						if (bSendServerEvents)
-						{
-							ServerSetInputPressed(AbilitySpec.Handle);
-						}
-
-						AbilitySpecInputPressed(AbilitySpec);
-						InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+						TryActivateAbility(AbilitySpec.Handle);
 					}
-					else
+					else if (bWasPressed != AbilitySpec.InputPressed)
 					{
-						if (bSendServerEvents)
+						const bool bSendServerEvents = (AbilitySpec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false);
+						if (AbilitySpec.InputPressed)
 						{
-							ServerSetInputReleased(AbilitySpec.Handle);
-						}
+							if (bSendServerEvents)
+							{
+								ServerSetInputPressed(AbilitySpec.Handle);
+							}
 
-						AbilitySpecInputReleased(AbilitySpec);
-						InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+							AbilitySpecInputPressed(AbilitySpec);
+							InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+						}
+						else
+						{
+							if (bSendServerEvents)
+							{
+								ServerSetInputReleased(AbilitySpec.Handle);
+							}
+
+							AbilitySpecInputReleased(AbilitySpec);
+							InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+						}
 					}
 				}
 			}
