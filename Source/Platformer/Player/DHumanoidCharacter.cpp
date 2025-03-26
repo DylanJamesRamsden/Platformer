@@ -6,6 +6,8 @@
 #include <AbilitySystemGlobals.h>
 #include <EnhancedInputSubsystems.h>
 #include <GameFramework/CharacterMovementComponent.h>
+#include <Camera/CameraComponent.h>
+#include <GameFramework/SpringArmComponent.h>
 
 #include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
 #include "Platformer/Input/DEnhancedInputComponent.h"
@@ -20,7 +22,17 @@ ADHumanoidCharacter::ADHumanoidCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 
 	OverrideInputComponentClass = UDEnhancedInputComponent::StaticClass();
-	
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+
+	SpringArmComp->SetupAttachment(RootComponent);
+	CameraComp->SetupAttachment(SpringArmComp);
+
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->CameraLagSpeed = 5.0f;
+	SpringArmComp->SetRelativeRotation(FRotator(-10.0f, -90.0f, 0.0f));
+	SpringArmComp->TargetArmLength = 1500.0f;
 }
 
 void ADHumanoidCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

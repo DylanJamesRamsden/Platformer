@@ -8,6 +8,8 @@
 
 #include "DHumanoidCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 class UDInputData;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogDHumanoidCharacter, Log, All);
@@ -21,6 +23,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	const UDInputData* InputData = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	USpringArmComponent* SpringArmComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent* CameraComp;
 
 public:
 	// Sets default values for this character's properties
