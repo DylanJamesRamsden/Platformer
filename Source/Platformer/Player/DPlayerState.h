@@ -3,10 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerState.h"
+
+#include <GameFramework/PlayerState.h>
+#include <AbilitySystemInterface.h>
+
+#include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
+
 #include "DPlayerState.generated.h"
 
-class UAbilitySystemComponent;
 class UDAbilitySet;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogDPlayerState, Log, All);
@@ -15,14 +19,14 @@ DECLARE_LOG_CATEGORY_EXTERN(LogDPlayerState, Log, All);
  * 
  */
 UCLASS()
-class PLATFORMER_API ADPlayerState : public APlayerState
+class PLATFORMER_API ADPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityComponent")
-	UAbilitySystemComponent* AbilitySystemComp;
+	UDAbilitySystemComponent* AbilitySystemComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityComponent")
 	const UDAbilitySet* AbilitySet = nullptr;
@@ -31,14 +35,10 @@ public:
 
 	ADPlayerState();
 
-	/**
-	 * Gets the Ability System Component of a player state. N.B! Does not do any validation checks.
-	 * @return The player state's Ability System Component.
-	 */
-	UAbilitySystemComponent* GetAbilitySystemComponent() { return AbilitySystemComp; }
-
 protected:
 
 	virtual void BeginPlay() override;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComp; }
 	
 };
