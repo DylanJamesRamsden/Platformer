@@ -56,6 +56,12 @@ protected:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void Jump() override;
+
+	virtual void NotifyJumpApex() override;
+
+	virtual void Landed(const FHitResult& Hit) override;
+
 private:
 
 	UFUNCTION()

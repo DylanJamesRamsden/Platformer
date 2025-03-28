@@ -36,6 +36,8 @@ ADHumanoidCharacter::ADHumanoidCharacter()
 	SpringArmComp->CameraLagSpeed = 5.0f;
 	SpringArmComp->SetRelativeRotation(FRotator(-10.0f, -90.0f, 0.0f));
 	SpringArmComp->TargetArmLength = 1500.0f;
+
+	JumpMaxCount = 2;
 }
 
 void ADHumanoidCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -88,6 +90,39 @@ void ADHumanoidCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	Turn(DeltaSeconds);
+}
+
+void ADHumanoidCharacter::Jump()
+{
+	GetCharacterMovement()->GravityScale = 1.0f;
+	GetCharacterMovement()->bNotifyApex = true;
+	
+	Super::Jump();
+}
+
+void ADHumanoidCharacter::NotifyJumpApex()
+{
+	Super::NotifyJumpApex();
+
+	GetCharacterMovement()->GravityScale = 3.0f;
+}
+
+void ADHumanoidCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	// @TODO To be honest, we should just attach the ASC to the pawn rather than the PlayerState
+	if (ADPlayerState* playerState = GetPlayerState<ADPlayerState>())
+	{
+		if (const auto abilitySystemComponent = Cast<UDAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(playerState)))
+		{
+			FGameplayEventData EventData;
+			EventData.Instigator = GetOwner();
+			EventData.EventTag = GameplayEvent_Landed;
+
+			abilitySystemComponent->HandleGameplayEvent(EventData.EventTag, &EventData);
+		}
+	}
 }
 
 void ADHumanoidCharacter::AbilityInputTrigger(const FGameplayTag InputTag, const bool bValue)
