@@ -10,6 +10,7 @@
 #include <GameFramework/SpringArmComponent.h>
 
 #include "DPlayerState.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Platformer/AbilitySystem/DAbilitySystemComponent.h"
 #include "Platformer/Input/DEnhancedInputComponent.h"
 #include "Platformer/Input/DInputData.h"
@@ -20,7 +21,8 @@ DEFINE_LOG_CATEGORY(LogDHumanoidCharacter);
 ADHumanoidCharacter::ADHumanoidCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	OverrideInputComponentClass = UDEnhancedInputComponent::StaticClass();
 
@@ -81,6 +83,13 @@ void ADHumanoidCharacter::BeginPlay()
 	
 }
 
+void ADHumanoidCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	Turn(DeltaSeconds);
+}
+
 void ADHumanoidCharacter::AbilityInputTrigger(const FGameplayTag InputTag, const bool bValue)
 {
 	// @TODO To be honest, we should just attach the ASC to the pawn rather than the PlayerState
@@ -100,5 +109,43 @@ void ADHumanoidCharacter::Move(const FInputActionValue& inputActionValue)
 #endif
 	
 	AddMovementInput(FVector::ForwardVector, inputActionValue.Get<float>());
+
+	bIsTurning = true;
+	TurnDirection = inputActionValue.Get<float>() > 0 ? ETurnDirection::Right : ETurnDirection::Left;
+}
+
+void ADHumanoidCharacter::Turn(float DeltaSeconds)
+{
+	if (bIsTurning)
+	{
+		FRotator meshRelativeRotation = GetMesh()->GetRelativeRotation();
+		FRotator targetRotation = FRotator::ZeroRotator;
+
+		switch (TurnDirection)
+		{
+			case Right:
+				targetRotation = FRotator(meshRelativeRotation.Pitch, -90.0f, meshRelativeRotation.Roll);
+				meshRelativeRotation = UKismetMathLibrary::RInterpTo(meshRelativeRotation, targetRotation, DeltaSeconds, 10.0f);
+
+				GetMesh()->SetRelativeRotation(meshRelativeRotation);
+				if (FMath::IsNearlyEqual(meshRelativeRotation.Yaw, -90.0f, .001f))
+				{
+					bIsTurning = false;
+					TurnDirection = ETurnDirection::None;
+				}
+				break;
+			case Left:
+				targetRotation = FRotator(meshRelativeRotation.Pitch, 90.0f, meshRelativeRotation.Roll);
+				meshRelativeRotation = UKismetMathLibrary::RInterpTo(meshRelativeRotation, targetRotation, DeltaSeconds, 10.0f);
+
+				GetMesh()->SetRelativeRotation(meshRelativeRotation);
+				if (FMath::IsNearlyEqual(meshRelativeRotation.Yaw, 90.0f, .001f))
+				{
+					bIsTurning = false;
+					TurnDirection = ETurnDirection::None;
+				}
+				break;
+		}
+	}
 }
 

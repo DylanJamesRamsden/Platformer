@@ -8,6 +8,14 @@
 
 #include "DHumanoidCharacter.generated.h"
 
+UENUM()
+enum ETurnDirection
+{
+	None,
+	Right,
+	Left
+};
+
 class UCameraComponent;
 class USpringArmComponent;
 class UDInputData;
@@ -18,6 +26,12 @@ UCLASS()
 class PLATFORMER_API ADHumanoidCharacter : public ACharacter
 {
 	GENERATED_BODY()
+
+private:
+
+	// Turning
+	bool bIsTurning = false;
+	ETurnDirection TurnDirection = ETurnDirection::None;
 
 protected:
 
@@ -40,6 +54,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 private:
 
 	UFUNCTION()
@@ -47,5 +63,8 @@ private:
 
 	UFUNCTION()
 	void Move(const FInputActionValue& inputActionValue);
+
+	// Interpolates the Character's Skeletal Mesh Relative Rotation to a rotation based on the direction of movement (TurnDirection)
+	void Turn(float DeltaSeconds);
 
 };
